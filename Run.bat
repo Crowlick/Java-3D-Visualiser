@@ -1,0 +1,1 @@
+java "-Djava.library.path=.\lib\natives\windows" -cp ".\lib\jars\lwjgl.jar;.\lib\jars\lwjgl_util.jar;.\lib\jars\slick-util.jar;.\lib\jars\json-java.jar;.\lib\jars\vis.jar;.\bin" mathTester.Main

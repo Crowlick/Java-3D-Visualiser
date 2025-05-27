@@ -1,0 +1,47 @@
+#version 400 core
+
+in vec3 position;
+in vec3 normalsinio;
+
+out vec3 color;
+
+uniform mat4 transformMatrix;
+uniform mat3 normalMatrix;
+uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+uniform vec3 col;
+
+void main(void)
+{
+	gl_Position = projectionMatrix * viewMatrix * transformMatrix * vec4(position, 1.0);
+
+	//vec4 bebra = transformMatrix * vec4(normalsinio, 1.0);
+	vec3 normal = normalize(normalMatrix * normalsinio);
+  	vec3 lightColor = vec3(1., 1., 1.);
+  	vec3 lightSource = vec3(0., 1., 0.);
+  	float diffStrength = max(0., dot(lightSource, normal));
+  	vec3 diffuse = diffStrength * lightColor;
+  
+  	vec3 camSource = vec3(0., 0., 1.);
+  	vec3 viewSource = normalize(camSource);
+  	vec3 reflectSource = normalize(reflect(-lightSource, normal));
+  	float specStrength = max(0., dot(reflectSource, viewSource));
+  	specStrength = pow(specStrength, 32.);
+  	vec3 specular = specStrength * lightColor;
+  
+  
+  	vec3 ambient = vec3(0.2, 0.2, 0.2);
+  	vec3 lighting = ambient + specular + diffuse;
+  
+  	vec3 modelColor = col;
+    color = modelColor * lighting;
+    //color = bebra.xyz;
+	//color = normal;
+	//color = vec3(position.x + 0.5, position.y + 0.5, position.z + 0.5);
+	//if (col.x == -1)
+	//	color = vec3(position.x + 0.5, position.y + 0.5, position.z + 0.5);
+	//else
+	//	color = col;
+	//color = normalize(normalMatrix * normalsinio);
+	//color = normalize(normalsinio);
+}

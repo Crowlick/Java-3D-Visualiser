@@ -1,0 +1,98 @@
+{
+	"elements" : 
+	{
+    	"Bodies": [
+    		{
+	    		"nameInConfig": "Part3D",
+	    		"modelName": "Cube",
+	    		"coordinateStart": 10
+    		}
+    	],
+    	
+    	"Joints": [
+			{
+				"nameInConfig": "Splj",
+				"modelName": "Sphere",
+				"coordinateStart": 1,
+				"isFixed": false
+			},
+			{
+				"nameInConfig": "Splg",
+				"modelName": "Sphere",
+				"coordinateStart": 1,
+				"isFixed": true
+			},
+			{
+				"nameInConfig": "Revj",
+				"modelName": "Cylinder",
+				"coordinateStart": 1,
+				"isFixed": false
+			},
+    	],
+    	
+		"TwoPointConnectable": [
+			{
+				"nameInConfig": "Pr",
+				"modelName" : "Spring",
+				"coordinateStart": 1,
+				"filePath": "Spring",
+				"baseScale": [0.005f, 0.005f, 0.01f],
+				"baseDirection": [0f, 0f, 0f]
+			},
+			{
+				"nameInConfig": "Beam",
+				"modelName": "Cube",
+				"coordinateStart": 6
+			},
+			{
+				"nameInConfig": "Cyjg",
+				"modelName": "Rail",
+				"coordinateStart": 0,
+				"filePath": "Rail",
+				"baseScale": [0.01f, 0.01f, 0.1f],
+				"baseDirection": [0f, 0f, 0f]
+			},
+			{
+				"nameInConfig": "Cylj",
+				"modelName": "Rail",
+				"coordinateStart": 0,
+				"filePath": "Rail",
+				"baseScale": [0.01f, 0.01f, 0.1f],
+				"baseDirection": [0f, 0f, 0f]
+			},
+		],
+		
+		"BodyParts": [
+			{
+				"nameInConfig": "sel",
+				"modelName" : "Cylinder",
+				"coordinateStart": 0,
+				"color": [0, 1, 0],
+				"baseScale": [0.1f, 0.1f, 0.1f],
+				"baseDirection": [0, 0, 90]
+			},
+		],
+		
+		"TwoBodyParts": [
+			{
+				"nameInConfig": "GC3D",
+				"coordinateStart": 0,
+				"subModels": [
+					{
+						"modelName": "Shtock",
+						"filePath": "Plunger/Shtock2",
+						"baseScale": [0.01f, 0.01f, 0.9f],
+						"color": [0f, 0.5f, 0.5f]
+					},
+					{
+						"modelName": "Frame",
+						"filePath": "Plunger/Frame2",
+						"baseScale": [0.01f, 0.01f, 1.8f],
+						"baseDirection": [0f, 0f, 0f],
+						"color": [0f, 0.4f, 0.4f]
+					}
+				]
+			},
+		],
+    }
+}
