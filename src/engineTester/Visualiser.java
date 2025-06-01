@@ -360,8 +360,8 @@ public class Visualiser implements Runnable {
 		}
 		
 		
-		//try (BufferedReader br = Files.newBufferedReader(Paths.get(pth)))
-		try (BufferedReader br = new BufferedReader(new StringReader(pth)))
+		try (BufferedReader br = Files.newBufferedReader(Paths.get(pth)))
+		//try (BufferedReader br = new BufferedReader(new StringReader(pth)))
 		{
 			String line;
 			
