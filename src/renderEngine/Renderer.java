@@ -1,5 +1,13 @@
 package renderEngine;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -24,6 +32,39 @@ public class Renderer {
 	{
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+	}
+	
+	public Renderer(StaticShader shader, String config)
+	{
+		StringBuilder jsonString = new StringBuilder();
+		try (BufferedReader br = Files.newBufferedReader(Paths.get(config)))
+		{
+			String line;
+			while ((line = br.readLine()) != null)
+			{
+				jsonString.append(line).append('\n');
+			}
+		} catch (IOException e) {
+			System.out.println("No found config file");
+			e.printStackTrace();
+			System.exit(-1);
+		}
+		
+		try 
+		{
+			JSONObject jsonFile = new JSONObject(jsonString.toString());
+			JSONObject jsonWindow = jsonFile.getJSONObject("window");
+			JSONArray jsonColor = jsonWindow.getJSONArray("backgroundColor");
+			GL11.glClearColor(jsonColor.getFloat(0), jsonColor.getFloat(1), jsonColor.getFloat(2), jsonColor.getFloat(3));
+		} catch (JSONException e) { 
+	            System.err.println("Error parsing JSON model configuration file: " + config);
+	            e.printStackTrace();
+	            System.exit(-1);
+	    }
+		createProjectionMatrix();
+		shader.start();
+		shader.loadProjectionMatrix(_projMatr);
+		shader.stop();
 	}
 	
 	public Renderer(StaticShader shader)
