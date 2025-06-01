@@ -55,7 +55,10 @@ public class Renderer {
 			JSONObject jsonFile = new JSONObject(jsonString.toString());
 			JSONObject jsonWindow = jsonFile.getJSONObject("window");
 			JSONArray jsonColor = jsonWindow.getJSONArray("backgroundColor");
-			GL11.glClearColor(jsonColor.getFloat(0), jsonColor.getFloat(1), jsonColor.getFloat(2), jsonColor.getFloat(3));
+			if (jsonColor.length() == 4)
+				GL11.glClearColor(jsonColor.getFloat(0), jsonColor.getFloat(1), jsonColor.getFloat(2), jsonColor.getFloat(3));
+			else
+				GL11.glClearColor(jsonColor.getFloat(0), jsonColor.getFloat(1), jsonColor.getFloat(2), 1f);
 		} catch (JSONException e) { 
 	            System.err.println("Error parsing JSON model configuration file: " + config);
 	            e.printStackTrace();
