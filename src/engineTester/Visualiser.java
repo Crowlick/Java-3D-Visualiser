@@ -60,7 +60,7 @@ public class Visualiser implements Runnable {
 		
 		StaticShader shader = new StaticShader();
 		StaticShader shader2 = new StaticShader("/shaders/vertexShader3.txt", "/shaders/fragmentShader.txt");
-		Renderer renderer = new Renderer(shader);
+		Renderer renderer = new Renderer(shader, CONFIG_PATH);
 	    
 		Axes axes = new Axes(loader);
 		ArrayList<Body> bodies = new ArrayList<Body>();
@@ -360,8 +360,8 @@ public class Visualiser implements Runnable {
 		}
 		
 		
-		try (BufferedReader br = Files.newBufferedReader(Paths.get(pth)))
-		//try (BufferedReader br = new BufferedReader(new StringReader(pth)))
+		//try (BufferedReader br = Files.newBufferedReader(Paths.get(pth)))
+		try (BufferedReader br = new BufferedReader(new StringReader(pth)))
 		{
 			String line;
 			
