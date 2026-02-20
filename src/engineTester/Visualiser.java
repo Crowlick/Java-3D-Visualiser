@@ -70,9 +70,9 @@ public class Visualiser implements Runnable {
 		
 		readSystem(bodies, joints, bebras, config);
 		
-		System.out.println("Reading...");
+
 		animator = new Animator(data, bodies.size());
-		System.out.println("Finished!");
+
 		
 		an.setAnimationSliderMax(animator.getMax() - 1);
 		
@@ -90,7 +90,7 @@ public class Visualiser implements Runnable {
 		
 		center.scale(1.f / (bodies.size() + joints.size()));	
 		
-		_camera = new Camera(center, bodies, joints);
+		_camera = new Camera(center, bodies, joints, CONFIG_PATH);
 		
 		for (Body bd : bodies)
 			for (Connectable br : bebras)
@@ -99,6 +99,7 @@ public class Visualiser implements Runnable {
 		{
 			for (Joint jt : joints)
 			{
+				jt.refreshScale();
 				if (jt.getPins() != null)
 					for (int pin = 0; pin < bd.getPins().length; pin++)
 					{
@@ -343,7 +344,7 @@ public class Visualiser implements Runnable {
 	public static void readSystem(ArrayList<Body> bodies, ArrayList<Joint> joints,
 			ArrayList<Connectable> con, String pth)
 	{
-		
+
 		StringBuilder jsonString = new StringBuilder();
 		
 		try (BufferedReader br = Files.newBufferedReader(Paths.get(CONFIG_PATH)))
@@ -360,8 +361,8 @@ public class Visualiser implements Runnable {
 		}
 		
 		
-		try (BufferedReader br = Files.newBufferedReader(Paths.get(pth)))
-		//try (BufferedReader br = new BufferedReader(new StringReader(pth)))
+		//try (BufferedReader br = Files.newBufferedReader(Paths.get(pth)))
+		try (BufferedReader br = new BufferedReader(new StringReader(pth)))
 		{
 			String line;
 			
@@ -389,9 +390,27 @@ public class Visualiser implements Runnable {
 						vals = processLine(line);
 						int start = findDataStart(vals) + jsonElement.getInt("coordinateStart");
 						pos1.set(Float.parseFloat(vals[start++]), Float.parseFloat(vals[start++]), Float.parseFloat(vals[start++]));
-						bodies.add(new Body(ModelProvider.getModel("Cube"), findPins(vals), pos1));
+						Body newBody = new Body(ModelProvider.getModel("Cube"), findPins(vals), pos1);
+						if (jsonElement.has("baseScale"))
+						{
+							Object jsonScale = jsonElement.get("baseScale");
+							if (jsonScale instanceof JSONArray)
+							{ 
+								JSONArray jsScale = (JSONArray)jsonScale;
+								Vector3f parameter = new Vector3f(jsScale.getFloat(0), jsScale.getFloat(1), jsScale.getFloat(2));
+								newBody.setScale(parameter);
+							}
+							else
+							{
+								float scale = jsonElement.getFloat("baseScale");
+								Vector3f parameter = new Vector3f(scale, scale, scale);
+								newBody.setScale(parameter);
+							}
+						}
+						bodies.add(newBody);
 					}
 					jsonModels = jsonElements.getJSONArray("Joints");
+
 					for (i = 0; i < jsonModels.length(); i++)
 					{
 						JSONObject jsonElement = jsonModels.getJSONObject(i);
@@ -400,7 +419,27 @@ public class Visualiser implements Runnable {
 						vals = processLine(line);
 						int start = findDataStart(vals) + jsonElement.getInt("coordinateStart");
 						pos1.set(Float.parseFloat(vals[start++]), Float.parseFloat(vals[start++]), Float.parseFloat(vals[start++]));
-						joints.add(new Joint(findPins(vals), pos1, jsonElement.getBoolean("isFixed"), ModelProvider.getModel(jsonElement.getString("modelName"))));
+						Joint newJoint = new Joint(findPins(vals), pos1, jsonElement.getBoolean("isFixed"), ModelProvider.getModel(jsonElement.getString("modelName")));
+						if (jsonElement.has("baseScale"))
+						{
+							Object jsonScale = jsonElement.get("baseScale");
+							if (jsonScale instanceof JSONArray)
+							{ 
+								JSONArray jsScale = (JSONArray)jsonScale;
+								Vector3f parameter = new Vector3f(jsScale.getFloat(0), jsScale.getFloat(1), jsScale.getFloat(2));
+		
+								newJoint.setBaseScale(parameter);
+							}
+							else
+							{
+								float scale = jsonElement.getFloat("baseScale");
+
+								Vector3f parameter = new Vector3f(scale, scale, scale);
+								newJoint.setBaseScale(parameter);
+							}
+						}
+
+						joints.add(newJoint);
 					}
 					
 					jsonModels = jsonElements.getJSONArray("TwoPointConnectable");

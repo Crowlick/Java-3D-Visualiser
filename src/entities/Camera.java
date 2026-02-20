@@ -1,9 +1,17 @@
 package entities;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
 import toolBox.Maths;
@@ -26,14 +34,42 @@ public class Camera
 	
 	private ArrayList<Body> _bodies;
 	private ArrayList<Joint> _joints;
-	public Camera(Vector3f pos, ArrayList<Body> bd, ArrayList<Joint> jt) 
+	public Camera(Vector3f pos, ArrayList<Body> bd, ArrayList<Joint> jt, String config) 
 	{
 		_startPos = new Vector3f(pos);
 		_pos = new Vector3f(pos);
 		_bodies = bd; _joints = jt;
+		
+		StringBuilder jsonString = new StringBuilder();
+		try (BufferedReader br = Files.newBufferedReader(Paths.get(config)))
+		{
+			String line;
+			while ((line = br.readLine()) != null)
+			{
+				jsonString.append(line).append('\n');
+			}
+		} catch (IOException e) {
+			System.out.println("No found config file");
+			e.printStackTrace();
+			System.exit(-1);
+		}
+		try 
+		{
+			JSONObject jsonFile = new JSONObject(jsonString.toString());
+			
+			JSONObject jsonWindow = jsonFile.getJSONObject("window");
+			if (jsonWindow.has("cameraMoveSpeed"))
+				_camSpeed = jsonWindow.getFloat("cameraMoveSpeed");
+			if (jsonWindow.has("cameraRotationSpeed"))
+				_camSens = jsonWindow.getFloat("cameraRotationSpeed");
+		} catch (JSONException e) { 
+	            System.err.println("Error parsing JSON model configuration file: " + config);
+	            e.printStackTrace();
+	            System.exit(-1);
+	    }
 	}
 	public Camera() {}
-	
+
 	public void move()
 	{		
 		int wheel = Mouse.getDWheel();
@@ -102,8 +138,8 @@ public class Camera
 	{		
 		if (Mouse.isButtonDown(0))
 		{
-			float incy = Mouse.getDX() * 0.01f;
-			float incx = Mouse.getDY() * 0.01f;
+			float incy = Mouse.getDX() * _camSens;
+			float incx = Mouse.getDY() * _camSens;
 			_rot2.y += incy;
 			_rot2.x -= incx;
 			_pos = Maths.rotateAroundPoint(_pos, _startPos, _dirUp, -incy);

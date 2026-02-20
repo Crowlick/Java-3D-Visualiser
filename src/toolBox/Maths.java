@@ -150,6 +150,12 @@ public class Maths
 		return q.dot(qPoint).dot(q.negate()).toVector3f();
 	}
 	
+	public static Vector3f rotate(Vector3f point, Quaternion q)
+	{
+		Quaternion qPoint = new Quaternion(point);
+		return q.dot(qPoint).dot(q.negate()).toVector3f();
+	}
+	
 	public static Vector3f rotateAroundPoint(Vector3f point, Vector3f around, Vector3f axis, float angle)
 	{
 		Vector3f newPoint = new Vector3f(point);

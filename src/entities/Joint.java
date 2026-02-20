@@ -17,9 +17,11 @@ public class Joint extends Entity implements Connectable
 	private Body _connectedBody = null;
 	private Vector3f _locPos = null;
 	private RawModel _baseModel = ModelProvider.getModel("Sphere");
+
+	public static Vector3f allScale = new Vector3f(0.02f, 0.02f, 0.02f);
 	public Joint(int[] pins, Vector3f pos, boolean isFix, RawModel model)
 	{
-		super(model, pos, new Vector3f(0f, 0f, 0f), 0.02f);
+		super(model, pos, new Vector3f(0f, 0f, 0f), allScale);
 		Vector3f color = isFix ? new Vector3f(0.5f, 0f, 0f) : new Vector3f(1f, 1f, 1f);
 		setColor(color);
 		_pins = pins.clone();
@@ -29,7 +31,7 @@ public class Joint extends Entity implements Connectable
 	
 	public Joint(int[] pins, Vector3f pos, boolean isFix)
 	{
-		super(pos, new Vector3f(0f, 0f, 0f), 0.02f);
+		super(pos, new Vector3f(0f, 0f, 0f), allScale);
 		setModel(_baseModel);
 		Vector3f color = isFix ? new Vector3f(0.5f, 0f, 0f) : new Vector3f(1f, 1f, 1f);
 		setColor(color);
@@ -40,7 +42,7 @@ public class Joint extends Entity implements Connectable
 	
 	public Joint(Vector3f pos, boolean isFix)
 	{
-		super(pos, new Vector3f(0f, 0f, 0f), 0.02f);
+		super(pos, new Vector3f(0f, 0f, 0f), allScale);
 		setModel(_baseModel);
 		Vector3f color = isFix ? new Vector3f(0.5f, 0f, 0f) : new Vector3f(1f, 1f, 1f);
 		setColor(color);
@@ -50,6 +52,11 @@ public class Joint extends Entity implements Connectable
 
 	public boolean isFixed() {return _isFixed;}
 	public Body getBody() {return _connectedBody;}
+	
+	public void refreshScale()
+	{
+		_scale.set(allScale);
+	}
 	
 	@Override
 	public int[] getPins() {return _pins;}
@@ -84,5 +91,7 @@ public class Joint extends Entity implements Connectable
 	public void setBaseScale(Vector3f baseScale)
 	{
 		_scale.set(baseScale);
+		allScale.set(baseScale);
+		System.out.println("Out!");
 	}
 }

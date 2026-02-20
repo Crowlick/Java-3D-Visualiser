@@ -3,6 +3,7 @@ package entities;
 import org.lwjgl.util.vector.Vector3f;
 
 import renderEngine.RawModel;
+import toolBox.Maths;
 import toolBox.Quaternion;
 
 
@@ -51,7 +52,10 @@ public abstract class TwoPointConnectable extends Entity implements Connectable
 
 		setScale(_baseScale);
 		if (_isResizable)
+		{
 			_scale.z *= _len;
+			_scale = Maths.rotate(_scale, _baseDirection);
+		}
 	}
 	
 	@Override
@@ -59,6 +63,7 @@ public abstract class TwoPointConnectable extends Entity implements Connectable
 	{
 		baseDirection.set((float)Math.toRadians(baseDirection.x), (float)Math.toRadians(baseDirection.y), (float)Math.toRadians(baseDirection.z));
 		Quaternion.toQuaternion(baseDirection.x, baseDirection.y, baseDirection.z, _baseDirection);
+	//	_scale = Maths.rotate(_scale, _baseDirection);
 	}
 	
 	@Override

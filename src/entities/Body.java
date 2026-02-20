@@ -40,7 +40,7 @@ public class Body extends Entity
 		Vector3f vect = Vector3f.sub(end, start, null);
 		float len = vect.length();
 		Vector3f cos = Maths.objectRotation(start, end);
-		_joints.add(new Entity(getModel(), middle, cos, new Vector3f(0.1f, 0.1f, len)));
+		_joints.add(new Entity(getModel(), middle, cos, new Vector3f(_scale.x / 4f, _scale.y / 4f, len)));
 	}
 	
 	public void addJoint(Joint end)
@@ -56,7 +56,7 @@ public class Body extends Entity
 			
 			Vector3f cos = Maths.objectRotation(getPos(), end.getPos());
 			
-			_joints.add(new Entity(getModel(), middle, cos, new Vector3f(0.01f, 0.01f, len)));
+			_joints.add(new Entity(getModel(), middle, cos, new Vector3f(_scale.x / 4f, _scale.y / 4f, len)));
 			
 			_joints.get(_joints.size() - 1).setColor(_color);
 			
@@ -76,7 +76,7 @@ public class Body extends Entity
 			_joints.get(i).setPos(middle);
 			
 			len = Vector3f.sub(_jointReal.get(i).getPos(), _pos, null).length();
-			_joints.get(i).setScale(new Vector3f(0.01f, 0.01f, len));
+			_joints.get(i).setScale(new Vector3f(_scale.x / 4f, _scale.y / 4f, len));
 			
 			cos = Maths.objectRotation(_pos, _jointReal.get(i).getPos());
 			_joints.get(i).setRot(Quaternion.toQuaternion(cos.x, cos.y, cos.z));
